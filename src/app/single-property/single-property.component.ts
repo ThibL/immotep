@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { PropertiesService } from "../services/properties.service";
 import { Property } from "../interfaces/property";
+import * as $ from "jquery";
 
 @Component({
   selector: "app-single-property",
