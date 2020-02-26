@@ -1,0 +1,252 @@
+<div class="rounded shadow bg-white p-5">
+  <div class="row">
+    <div class="col-12 d-flex">
+      <h2 class="font-weight-light">
+        <i class="fa fa-home"></i> Biens immobiliers
+      </h2>
+      <button
+        class="btn btn-primary ml-auto"
+        type="button"
+        data-toggle="modal"
+        data-target="#propertiesFormModal"
+        (click)="resetForm()"
+      >
+        <i class="fa fa-plus-circle"></i>
+        Ajouter un bien
+      </button>
+    </div>
+  </div>
+  <hr class="mt-1 mb-5 bg-dark" />
+  <div class="row">
+    <div
+      class="col-12 shadow-sm p-4 mb-3 bg-light"
+      *ngFor="let property of properties; let i = index"
+    >
+      <div class="row">
+        <div class="col-3" *ngIf="property.photo && property.photo !== ''">
+          <img [src]="property.photo" alt="" class="w-100" />
+        </div>
+        <div class="col-9">
+          <div class="d-flex">
+            <h3 class="font-weight-normal">{{ property.title }}</h3>
+            <div class="ml-auto">
+              <button
+                class="btn btn-primary m-1"
+                type="button"
+                (click)="onEditProperty(property)"
+              >
+                <i class="fa fa-edit"></i>
+              </button>
+              <button
+                class="btn btn-danger m-1"
+                type="button"
+                (click)="onDeleteProperty(i)"
+              >
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          <p>
+            {{ property.category }} de {{ property.surface }} m²
+            <span *ngIf="property.rooms">, {{ property.rooms }} pièce(s)</span>
+          </p>
+          <p *ngIf="property.price && property.price !== ''">
+            Prix:
+            <span class="font-weight-bold text-primary"
+              >{{ property.price }} €</span
+            >
+          </p>
+          <p>
+            <span *ngIf="!property.sold" class="text-success">A vendre</span>
+            <span *ngIf="property.sold" class="text-danger">Vendu !</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal de Delete property -->
+<div
+  class="modal fade"
+  id="deletePropertyModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">
+          Êtes-vous sûr(e) de vouloir supprimer ce bien ?
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Annuler
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="onDeleteConfirmProperty()"
+        >
+          Supprimer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Add property -->
+
+<div
+  class="modal fade"
+  id="propertiesFormModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="propertiesFormModal"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <form [formGroup]="propertiesForm" (ngSubmit)="onSubmitPropertiesForm()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Edition d'un bien</h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+            id="propertiesFormModal"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <input
+              type="text"
+              placeholder="Titre"
+              class="form-control"
+              formControlName="title"
+            />
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01"
+                >Catégorie</label
+              >
+            </div>
+            <select
+              class="custom-select"
+              id="inputGroupSelect01"
+              formControlName="category"
+            >
+              <option value="Appartement">Appartement</option>
+              <option value="Maison">Maison</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-6">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Surface (m²)"
+                formControlName="surface"
+              />
+            </div>
+            <div class="form-group col-6">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Nombre de pièces"
+                formControlName="rooms"
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <textarea
+              rows="4"
+              class="form-control w-100"
+              placeholder="Description du bien"
+              formControlName="description"
+            ></textarea>
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">€</label>
+            </div>
+            <input
+              type="group-text"
+              placeholder="Prix"
+              class="form-control"
+              formControlName="price"
+            />
+          </div>
+          <div *ngIf="photoUrl && photoUrl !== ''" class="d-flex">
+            <img [src]="photoUrl" class="w-50 mx-auto mb-3" />
+          </div>
+          <div class="form-row">
+            <div class="col-9">
+              <div class="input-group mb-3">
+                <div class="custom-file">
+                  <input
+                    type="file"
+                    class="custom-file-input"
+                    id="inputGroupFile01"
+                    (change)="onUploadFile($event)"
+                  />
+                  <label class="custom-file-label" for="inputGroupFile01"
+                    >Envoyer une image</label
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="col-3">
+              <div
+                class="spinner-border text-primary"
+                role="status"
+                *ngIf="photoUploading"
+              >
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="custom-control custom-switch">
+            <input
+              type="checkbox"
+              class="custom-control-input"
+              id="customSwitch1"
+              formControlName="sold"
+            />
+            <label class="custom-control-label" for="customSwitch1">
+              <span class="text-success" *ngIf="propertiesForm.value.sold"
+                >Vendu</span
+              >
+              <span class="text-danger" *ngIf="!propertiesForm.value.sold"
+                >A vendre</span
+              >
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Annuler
+          </button>
+          <button type="button" class="btn btn-primary" type="submit">
+            Enregistrer
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

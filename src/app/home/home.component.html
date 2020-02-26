@@ -1,0 +1,25 @@
+<div class="container">
+  <div class="row mt-5">
+    <div
+      class="col-sm-12 col-md-6 col-lg-4 mb-2"
+      *ngFor="let property of properties; let i = index"
+    >
+      <div class="card" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">{{ property.title }}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{ property.category }}</h6>
+          <p class="card-text">
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quam
+            iusto, enim sint molestiae corrupti nobis a eum cumque. Expedita
+            molestias totam vel eligendi, numquam ad ab quia est adipisci
+            laboriosam.
+          </p>
+          <p [ngStyle]="{ color: getSoldValue(i) }">
+            <span *ngIf="!property.sold">A vendre</span>
+            <span *ngIf="property.sold">Vendu !</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
