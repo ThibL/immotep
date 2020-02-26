@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { PropertiesService } from "../services/properties.service";
 import { Subscription } from "rxjs";
+import { Property } from "../interfaces/property";
 
 @Component({
   selector: "app-home",
@@ -8,7 +9,7 @@ import { Subscription } from "rxjs";
   styleUrls: ["./home.component.css"]
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  properties = [];
+  properties: Property[] = [];
   propertiesSubscription: Subscription;
 
   constructor(private propertiesService: PropertiesService) {}
@@ -19,6 +20,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.properties = data;
       }
     );
+    this.propertiesService.getProperties();
     this.propertiesService.emitProperties();
   }
 

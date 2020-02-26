@@ -55,6 +55,8 @@
 import "jquery";
 import "popper.js";
 import "bootstrap";
+import "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/free-solid-svg-icons";
 
 /***************************************************************************************************
  * Zone JS is required by default for Angular itself.

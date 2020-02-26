@@ -22,7 +22,7 @@ export class AdminPropertiesComponent implements OnInit {
 
   photoUploading = false;
   photoUploaded = false;
-  photoUrl: string;
+  photosAdded: any[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -55,11 +55,10 @@ export class AdminPropertiesComponent implements OnInit {
     newProperty.sold = this.propertiesForm.get("sold").value
       ? this.propertiesForm.get("sold").value
       : false;
-    newProperty.photo = this.photoUrl ? this.photoUrl : "";
+    newProperty.photos = this.photosAdded ? this.photosAdded : [];
     if (this.editMode) {
       this.propertiesService.updateProperty(newProperty, this.indexToUpdate);
     } else {
-      newProperty.sold = false;
       this.propertiesService.createProperty(newProperty);
     }
     $("#propertiesFormModal").modal("hide");
@@ -68,25 +67,18 @@ export class AdminPropertiesComponent implements OnInit {
   resetForm() {
     this.editMode = false;
     this.propertiesForm.reset();
-    this.photoUrl = "";
+    this.photosAdded = [];
   }
 
   onDeleteProperty(index) {
     $("#deletePropertyModal").modal("show");
-    index = this.indexToRemove;
-    console.log(this.properties[index]);
+    this.indexToRemove = index;
   }
 
-  onDeleteConfirmProperty() {
-    /* if (
-      this.properties[this.indexToRemove].photo &&
-      this.properties[this.indexToRemove].photo !== ""
-    ) {
-      this.propertiesService.removeFile(
-        this.properties[this.indexToRemove].photo
-      );
-    } */
-
+  onConfirmDeleteProperty() {
+    this.properties[this.indexToRemove].photos.forEach(photo => {
+      this.propertiesService.removeFile(photo);
+    });
     this.propertiesService.deleteProperty(this.indexToRemove);
     $("#deletePropertyModal").modal("hide");
   }
@@ -97,13 +89,15 @@ export class AdminPropertiesComponent implements OnInit {
     this.propertiesForm.get("title").setValue(property.title);
     this.propertiesForm.get("category").setValue(property.category);
     this.propertiesForm.get("surface").setValue(property.surface);
-    this.propertiesForm.get("description").setValue(property.description);
     this.propertiesForm.get("rooms").setValue(property.rooms);
+    this.propertiesForm
+      .get("description")
+      .setValue(property.description ? property.description : "");
     this.propertiesForm.get("price").setValue(property.price);
     this.propertiesForm.get("sold").setValue(property.sold);
-    this.photoUrl = property.photo ? property.photo : "";
-    const index = this.properties.findIndex(propertyElement => {
-      if (propertyElement == property) {
+    this.photosAdded = property.photos ? property.photos : [];
+    const index = this.properties.findIndex(propertyEl => {
+      if (propertyEl === property) {
         return true;
       }
     });
@@ -115,15 +109,17 @@ export class AdminPropertiesComponent implements OnInit {
     this.propertiesService
       .uploadFile(event.target.files[0])
       .then((url: string) => {
-        if (this.photoUrl && this.photoUrl !== "") {
-          this.propertiesService.removeFile(this.photoUrl);
-        }
-        this.photoUrl = url;
+        this.photosAdded.push(url);
         this.photoUploading = false;
         this.photoUploaded = true;
         setTimeout(() => {
-          this.photoUploaded = true;
+          this.photoUploaded = false;
         }, 5000);
       });
+  }
+
+  onRemoveAddedPhoto(index) {
+    this.propertiesService.removeFile(this.photosAdded[index]);
+    this.photosAdded.splice(index, 1);
   }
 }

@@ -1,0 +1,9 @@
+.deletePhoto {
+  top: -15px;
+  right: -15px;
+  cursor: pointer;
+}
+
+.deletePhoto i {
+  font-size: 30px;
+}

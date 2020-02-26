@@ -23,8 +23,10 @@
       *ngFor="let property of properties; let i = index"
     >
       <div class="row">
-        <div class="col-3" *ngIf="property.photo && property.photo !== ''">
-          <img [src]="property.photo" alt="" class="w-100" />
+        <div class="col-3">
+          <div *ngFor="let photo of property.photos; let first = first">
+            <img *ngIf="first" [src]="photo" alt="" class="w-100" />
+          </div>
         </div>
         <div class="col-9">
           <div class="d-flex">
@@ -96,7 +98,7 @@
         <button
           type="button"
           class="btn btn-danger"
-          (click)="onDeleteConfirmProperty()"
+          (click)="onConfirmDeleteProperty()"
         >
           Supprimer
         </button>
@@ -191,8 +193,19 @@
               formControlName="price"
             />
           </div>
-          <div *ngIf="photoUrl && photoUrl !== ''" class="d-flex">
-            <img [src]="photoUrl" class="w-50 mx-auto mb-3" />
+          <div class="row">
+            <div
+              class="col-4 border border-secondary rounded m-1 p1 bg-light position-relative"
+              *ngFor="let photo of photosAdded; let i = index"
+            >
+              <span
+                class="text-danger position-absolute mr-1 deletePhoto"
+                (click)="onRemoveAddedPhoto(i)"
+              >
+                <i class="fa fa-trash"></i>
+              </span>
+              <img [src]="photo" class="w-100" />
+            </div>
           </div>
           <div class="form-row">
             <div class="col-9">

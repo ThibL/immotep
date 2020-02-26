@@ -33,6 +33,21 @@ export class PropertiesService {
       });
   }
 
+  getSingleProperty(id) {
+    return new Promise((resolve, reject) => {
+      firebase
+        .database()
+        .ref("/properties/" + id)
+        .once("value")
+        .then(data => {
+          resolve(data.val());
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
+
   createProperty(property: Property) {
     this.properties.push(property);
     this.saveProperties();
@@ -82,15 +97,17 @@ export class PropertiesService {
     });
   }
 
-  removeFile(filelink: string) {
-    if (filelink) {
-      const storageRef = firebase.storage().refFromURL(filelink);
+  removeFile(fileLink: string) {
+    if (fileLink) {
+      const storageRef = firebase.storage().refFromURL(fileLink);
       storageRef
         .delete()
         .then(() => {
           console.log("File deleted");
         })
-        .catch(err => console.error(err));
+        .catch(error => {
+          console.error(error);
+        });
     }
   }
 }

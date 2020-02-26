@@ -20,7 +20,6 @@ export class NavbarComponent implements OnInit {
   ngOnInit() {
     firebase.auth().onAuthStateChanged(userSession => {
       if (userSession) {
-        console.log(userSession);
         this.isLoggedIn = true;
       } else {
         console.log("Déconnecté!");
